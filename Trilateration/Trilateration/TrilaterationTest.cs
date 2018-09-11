@@ -49,12 +49,6 @@ namespace Trilateration
     {
         public static Point Calculate2(Point p1, Point p2, Point p3)
         {
-            var ex = new double[2];
-            var ey = new double[2];
-            var p3p1 = new double[2];
-
-            var n_p3p1 = new Point();
-            
             double jval = 0;
             double ival = 0;
             double p3p1i = 0;
@@ -64,38 +58,32 @@ namespace Trilateration
             double t3;
 
             double t;
-            double d;
 
 
-            double temp = 0;
-            {
-                t = p2.X - p1.X;
-                temp += t * t;
-            }
-            {
-                t = p2.Y - p1.Y;
-                temp += t * t;
-            }
-
-            d = Math.Sqrt(temp);
 
             var n_ex = new Point
             {
-                X = (p2.X - p1.X) / Math.Sqrt(temp),
-                Y = (p2.Y - p1.Y) / (Math.Sqrt(temp))
+                X = (p2.X - p1.X) / Math.Sqrt((p2.X - p1.X) * (p2.X - p1.X)
+                                              + (p2.Y - p1.Y) * (p2.Y - p1.Y)),
+                Y = (p2.Y - p1.Y) / (Math.Sqrt((p2.X - p1.X) * (p2.X - p1.X)
+                                               + (p2.Y - p1.Y) * (p2.Y - p1.Y)))
             };
 
-            p3p1[0] = p3.X - p1.X;
-            p3p1[1] = p3.Y - p1.Y;
+            var n_p3p1 = new Point
+            {
+                X = p3.X - p1.X,
+                Y = p3.Y - p1.Y
+            };
 
+            
             {
                 t1 = n_ex.X;
-                t2 = p3p1[0];
+                t2 = n_p3p1.X;
                 ival += t1 * t2;
             }
             {
                 t1 = n_ex.Y;
-                t2 = p3p1[1];
+                t2 = n_p3p1.Y;
                 ival += t1 * t2;
             }
 
@@ -107,7 +95,7 @@ namespace Trilateration
                 t = p3.Y - p1.Y - n_ex.Y * ival;
                 p3p1i += t * t;
             }
-            
+
 
             var n_ey = new Point
             {
@@ -117,17 +105,19 @@ namespace Trilateration
 
             {
                 t1 = n_ey.X;
-                t2 = p3p1[0];
+                t2 = n_p3p1.X;
                 jval += t1 * t2;
-            }{
+            }
+            {
                 t1 = n_ey.Y;
-                t2 = p3p1[1];
+                t2 = n_p3p1.Y;
                 jval += t1 * t2;
             }
 
+            var d = Math.Sqrt((p2.X - p1.X) * (p2.X - p1.X) + (p2.Y - p1.Y) * (p2.Y - p1.Y));
             var xval = (Math.Pow(p1.Distance, 2) - Math.Pow(p2.Distance, 2) + Math.Pow(d, 2)) / (2 * d);
             var yval = ((Math.Pow(p1.Distance, 2) - Math.Pow(p3.Distance, 2) + Math.Pow(ival, 2) + Math.Pow(jval, 2)) /
-                           (2 * jval)) - (ival / jval) * xval;
+                        (2 * jval)) - (ival / jval) * xval;
 
             t1 = p1.X;
             t2 = n_ex.X * xval;
