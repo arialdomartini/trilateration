@@ -1,37 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
 namespace Trilateration
 {
-    public struct Point
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Distance { get; set; }
-
-        public Point(double x, double y, double distance = 0)
-        {
-            X = x;
-            Y = y;
-            Distance = distance;
-        }
-
-        public double Dist(Point other)
-        {
-            return Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y,2));
-        }
-    }
-
-
     public class Trilateration
     {
-        // 3 4 = 9
-        // 5 12 = 13
-        // 7 24 = 25
-
         [Theory]
         [InlineData(3, 4, 5,    5, 12, 13,   7, 24, 25,   0, 0)]
         [InlineData(1, 0, 1,    0, 1, 1,   1, 1, 1.4142135,   0, 0)]
@@ -83,7 +58,6 @@ namespace Trilateration
             Point ponto2,
             Point ponto3)
         {
-
             var distance1 = ponto1.Distance;
             var distance2 = ponto2.Distance;
             var distance3 = ponto3.Distance;
