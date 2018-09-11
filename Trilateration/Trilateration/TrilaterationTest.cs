@@ -50,40 +50,27 @@ namespace Trilateration
         public static Point Calculate2(Point p1, Point p2, Point p3)
         {
             double jval = 0;
-            double p3p1i = 0;
 
             double t1;
             double t2;
             double t3;
 
-            double t;
+
+            var ex = Modulo(p2, p1);
+
+            var ival = ex * (p3 - p1);
 
 
-            var ex = (p2 - p1) / p2.DistanceFrom(p1);
-            var p3p1 = p3 - p1;
+            var n_ey = (p3 - p1 - ex * ival) / Math.Sqrt((p3 - p1 - ex * ival) * (p3 - p1 - ex * ival));
 
-            var ival = ex * p3p1;
-            
-            {
-                t = p3.X - p1.X - ex.X * ival;
-                p3p1i += (t * t);
-            }
-            {
-                t = p3.Y - p1.Y - ex.Y * ival;
-                p3p1i += (t * t);
-            }
-
-
-            var n_ey = (p3 - p1 - ex * ival) / Math.Sqrt(p3p1i);
-            
             {
                 t1 = n_ey.X;
-                t2 = p3p1.X;
+                t2 = (p3 - p1).X;
                 jval += t1 * t2;
             }
             {
                 t1 = n_ey.Y;
-                t2 = p3p1.Y;
+                t2 = (p3 - p1).Y;
                 jval += t1 * t2;
             }
 
@@ -105,6 +92,11 @@ namespace Trilateration
             result.Y = t1 + t2 + t3;
 
             return result;
+        }
+
+        private static Point Modulo(Point p2, Point p1)
+        {
+            return (p2 - p1) / p2.DistanceFrom(p1);
         }
 
 
